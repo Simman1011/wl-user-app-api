@@ -7,10 +7,10 @@ const { getRefferalCode } = require("../helper/index")
 const userRegister = asyncHandler(async (req, res) =>{
     const email = req.body.email;
     const mobile = req.body.mobile;
-    let find = { status: 'Y', $or: [ { email:email }, {mobile:mobile}] }
+    let find = { status: 'Y', $or: [{ email:email }, {mobile:mobile}] }
     const findUser = await User.findOne(find)
     let errorMeg = ''
-    // console.log(findUser);
+    console.log(findUser);
     if (findUser) {
         if (findUser.mobile === mobile) errorMeg += 'Mobile Number'
         if (findUser.mobile === mobile && findUser.email === email) errorMeg += ' and '
