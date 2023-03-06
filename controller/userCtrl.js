@@ -10,7 +10,7 @@ const userRegister = asyncHandler(async (req, res) =>{
     let find = { status: 'Y', $or: [{ email:email }, {mobile:mobile}] }
     const findUser = await User.findOne(find)
     let errorMeg = ''
-    console.log(findUser);
+
     if (findUser) {
         if (findUser.mobile === mobile) errorMeg += 'Mobile Number'
         if (findUser.mobile === mobile && findUser.email === email) errorMeg += ' and '
@@ -18,7 +18,6 @@ const userRegister = asyncHandler(async (req, res) =>{
         
         throw new Error(`${errorMeg} Already Exists`)
     }else{
-        //Create a new User
         let newUser = req.body;
         newUser['refferalCode'] = getRefferalCode()
         await User.create(newUser)
@@ -45,26 +44,26 @@ const userLogin = asyncHandler(async (req, res)=>{
     }
 })
 
-// User delete account
-const deleteAccount = asyncHandler(async (req, res)=>{
-    const { id } = req.params
-    try{
-        await User.findByIdAndUpdate(id,{status: "D"},{new: true})
-        res.json({message: "Your account has been deleted"})
-    }catch(error){
-        throw new Error(error)
-    }
-})
-
 // User profile update
 const profileUpdate = asyncHandler(async (req, res)=>{
     const { id } = req.params
     try{
-        await User.findByIdAndUpdate(id,req.body,{new: true})
+        await User.findByIdAndUpdate(id,req.body)
         res.json({message: "Profile has been updated"})
     }catch(error){
         throw new Error(error)
     }
 })
 
-module.exports = { userRegister, userLogin, deleteAccount, profileUpdate }
+// User delete account
+const deleteAccount = asyncHandler(async (req, res)=>{
+    const { id } = req.params
+    try{
+        await User.findByIdAndUpdate(id,{status: "D"})
+        res.json({message: "Your account has been deleted"})
+    }catch(error){
+        throw new Error(error)
+    }
+})
+
+module.exports = { userRegister, userLogin, profileUpdate, deleteAccount }

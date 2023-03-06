@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 var userSchema = new mongoose.Schema({
+    profileImg:{
+        type:String,
+        default: "https://img.myloview.com/posters/default-avatar-profile-icon-vector-social-media-user-image-700-205124837.jpg"
+    },
     name:{
         type:String,
         required:true,
@@ -27,9 +31,6 @@ var userSchema = new mongoose.Schema({
     language:{
         type:String,
     },
-    address:{
-        type:Array,
-    },
     totalOrders:{
         type:Number,
         default: 0
@@ -40,7 +41,7 @@ var userSchema = new mongoose.Schema({
     status:{
         type:String,
         default: "Y"
-    }
+    },
 });
 
 userSchema.pre("save", async function (next){
