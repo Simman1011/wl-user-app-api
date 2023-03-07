@@ -42,6 +42,13 @@ var userSchema = new mongoose.Schema({
         type:String,
         default: "Y"
     },
+    createdAt:{ 
+        type : Date, 
+        default: Date.now 
+    },
+    updateAt:{ 
+        type : Date,
+    }
 });
 
 userSchema.pre("save", async function (next){
