@@ -1,11 +1,12 @@
 const express = require("express")
 const router = express.Router()
+const auth = require("../../middlewares/auth");
 const { addAddress, getUserAds, getOneAds, updateAds, deleteAds } = require("../../controller/addressCtrl")
 
-router.post("/add/:userId", addAddress)
-router.get("/getAll/:userId", getUserAds)
-router.get("/getOne/:id", getOneAds)
-router.put("/update/:id", updateAds)
-router.put("/delete/:id", deleteAds)
+router.post("/add/:userId", auth, addAddress)
+router.get("/getAll/:userId", auth, getUserAds)
+router.get("/getOne/:id", auth, getOneAds)
+router.put("/update/:id", auth, updateAds)
+router.put("/delete/:id", auth, deleteAds)
 
 module.exports = router
