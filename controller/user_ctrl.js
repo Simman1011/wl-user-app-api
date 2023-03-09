@@ -1,4 +1,4 @@
-const User = require("../models/userModel")
+const User = require("../models/user_model")
 const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
 const { getRefferalCode } = require("../helper/index")

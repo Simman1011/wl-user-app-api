@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const auth = require("../../middlewares/auth");
-const { addAddress, getUserAds, getOneAds, updateAds, deleteAds } = require("../../controller/addressCtrl")
+const { addAddress, getUserAds, getOneAds, updateAds, deleteAds } = require("../../controller/address_ctrl")
 
 router.post("/add/:userId", auth, addAddress)
 router.get("/getAll/:userId", auth, getUserAds)

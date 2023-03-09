@@ -1,4 +1,4 @@
-const Address = require("../models/addressModel")
+const Address = require("../models/address_model")
 const asyncHandler = require("express-async-handler");
 
 // Add new address
