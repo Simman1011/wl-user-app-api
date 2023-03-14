@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
-const { getMainCat } = require("../../controller/mainCat_ctrl")
+const { getProductBySubCat } = require("../../controller/product_ctrl")
 
-router.get("/main", getMainCat)
+router.get("/subCat/:id", getProductBySubCat)
 
 module.exports = router

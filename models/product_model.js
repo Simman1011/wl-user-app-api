@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
-var subCatSchema = new mongoose.Schema({
+var productSchema = new mongoose.Schema({
     mainCatId:{
+        type:String,
+        required:true,
+    },
+    subCatId:{
         type:String,
         required:true,
     },
@@ -9,9 +13,12 @@ var subCatSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    image:{
+    mainImage:{
         type:String,
         required:true,
+    },
+    slideImages:{
+        type:Array
     },
     offerPrice:{
         type:Number,
@@ -24,6 +31,37 @@ var subCatSchema = new mongoose.Schema({
     offerPct:{
         type:Number,
         required:true,
+    },
+    sizes:{
+        type:Array
+    },
+    colors:{
+        type:Array
+    },
+    tagId:{
+        type:Number
+    },
+    stocks:{
+        type:Number
+    },
+    sleeve:{
+        type:String
+    },
+    fabric:{
+        type:String
+    },
+    pattern:{
+        type:String
+    },
+    packOf:{
+        type:String
+    },
+    description:{
+        type:String
+    },
+    isPopular:{
+        type:Boolean,
+        default: false
     },
     status:{
         type:String,
@@ -38,4 +76,4 @@ var subCatSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('sub_cats', subCatSchema);
+module.exports = mongoose.model('product', productSchema);
