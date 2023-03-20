@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
+const { ObjectId } = require('mongodb');
 
 var productSchema = new mongoose.Schema({
     mainCatId:{
-        type:String,
+        type:ObjectId,
         required:true,
     },
     subCatId:{
-        type:String,
+        type:ObjectId,
         required:true,
     },
     name:{
