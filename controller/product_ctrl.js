@@ -4,8 +4,9 @@ const asyncHandler = require("express-async-handler");
 
 const getProductByMainCat = asyncHandler(async (req, res) =>{
     let { id } = req.params
-    let { limit, skip } = req.query;
+    let { limit, skip, max, min } = req.query;
     try{
+        let priceFilter = {sellingPrice: {$max: max, $min: min}}
         let find = await Product.find({mainCatId: new ObjectId(id)}).limit(limit).skip(skip)
         
         res.json({
@@ -19,9 +20,34 @@ const getProductByMainCat = asyncHandler(async (req, res) =>{
 
 const getProductBySubCat = asyncHandler(async (req, res) =>{
     let { id } = req.params
-    let { limit, skip } = req.query;
+    let { limit, skip, min, max, sizes, colors, sleeve, fabric, pattern, stocks } = req.query;
+
+    let query = {subCatId: new ObjectId(id)}
+
+    if(min && max){
+        query['offerPrice'] = {$gte: min, $lte: max}
+    }
+    if(sizes){
+        query['sizes'] = {$in: sizes.split(',')}
+    }
+    if(colors){
+        query['colors'] = {$in: colors.split(',')}
+    }
+    if(sleeve){
+        query['sleeve'] = {$in: sleeve.split(',')}
+    }
+    if(fabric){
+        query['fabric'] = {$in: fabric.split(',')}
+    }
+    if(pattern){
+        query['pattern'] = {$in: pattern.split(',')}
+    }
+    if(stocks){
+        query['stocks'] = {$gte: stocks}
+    }
+
     try{
-        let find = await Product.find({subCatId: new ObjectId(id)}).limit(limit).skip(skip)
+        let find = await Product.find(query).limit(limit).skip(skip)
         
         res.json({
             message: "Products get successfully",
