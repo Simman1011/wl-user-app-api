@@ -2,11 +2,10 @@ const {ObjectId} = require('mongodb');
 const Product = require("../models/product_model")
 const asyncHandler = require("express-async-handler");
 
-const getProductByMainCat = asyncHandler(async (req, res) =>{
+const getProductsByMainCat = asyncHandler(async (req, res) =>{
     let { id } = req.params
-    let { limit, skip, max, min } = req.query;
+    let { limit, skip } = req.query;
     try{
-        let priceFilter = {sellingPrice: {$max: max, $min: min}}
         let find = await Product.find({mainCatId: new ObjectId(id)}).limit(limit).skip(skip)
         
         res.json({
@@ -18,7 +17,7 @@ const getProductByMainCat = asyncHandler(async (req, res) =>{
     }
 })
 
-const getProductBySubCat = asyncHandler(async (req, res) =>{
+const getProductsBySubCat = asyncHandler(async (req, res) =>{
     let { id } = req.params
     let { limit, skip, min, max, sizes, colors, sleeve, fabric, pattern, stocks } = req.query;
 
@@ -58,10 +57,39 @@ const getProductBySubCat = asyncHandler(async (req, res) =>{
     }
 })
 
+const getProductDetails = asyncHandler(async (req, res) =>{
+    let { id } = req.params
+    try{
+        let find = await Product.findById(id)
+        
+        res.json({
+            message: "Get product details successfully",
+            data: find
+        })
+    }catch(error){
+        throw new Error(error)
+    }
+})
+
+const getPopularProducts = asyncHandler(async (req, res) =>{
+    let { limit, skip } = req.query;
+
+    try{
+        let find = await Product.find({isPopular: true}).limit(limit).skip(skip)
+        
+        res.json({
+            message: "Get Popular products successfully",
+            data: find
+        })
+    }catch(error){
+        throw new Error(error)
+    }
+})
+
 const addProduct = asyncHandler(async (req, res) =>{
     let newProduct = req.body;
     await Product.create(newProduct)
     res.json({message: "Product Create successfully"})
 })
 
-module.exports = { getProductByMainCat, getProductBySubCat, addProduct }
+module.exports = { getProductsByMainCat, getProductsBySubCat, getProductDetails, getPopularProducts, getSimilarProducts, addProduct }
