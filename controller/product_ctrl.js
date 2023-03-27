@@ -23,27 +23,19 @@ const getProductsBySubCat = asyncHandler(async (req, res) =>{
 
     let query = {subCatId: new ObjectId(id)}
 
-    if(min && max){
-        query['offerPrice'] = {$gte: min, $lte: max}
-    }
-    if(sizes){
-        query['sizes'] = {$in: sizes.split(',')}
-    }
-    if(colors){
-        query['colors'] = {$in: colors.split(',')}
-    }
-    if(sleeve){
-        query['sleeve'] = {$in: sleeve.split(',')}
-    }
-    if(fabric){
-        query['fabric'] = {$in: fabric.split(',')}
-    }
-    if(pattern){
-        query['pattern'] = {$in: pattern.split(',')}
-    }
-    if(stocks){
-        query['stocks'] = {$gte: stocks}
-    }
+    if(min && max) query['offerPrice'] = {$gte: min, $lte: max}
+    
+    if(sizes) query['sizes'] = {$in: sizes.split(',')}
+    
+    if(colors) query['colors'] = {$in: colors.split(',')}
+    
+    if(sleeve) query['sleeve'] = {$in: sleeve.split(',')}
+
+    if(fabric) query['fabric'] = {$in: fabric.split(',')}
+    
+    if(pattern) query['pattern'] = {$in: pattern.split(',')}
+    
+    if(stocks) query['stocks'] = {$gte: stocks}
 
     try{
         let find = await Product.find(query).limit(limit).skip(skip)
@@ -92,4 +84,4 @@ const addProduct = asyncHandler(async (req, res) =>{
     res.json({message: "Product Create successfully"})
 })
 
-module.exports = { getProductsByMainCat, getProductsBySubCat, getProductDetails, getPopularProducts, getSimilarProducts, addProduct }
+module.exports = { getProductsByMainCat, getProductsBySubCat, getProductDetails, getPopularProducts, addProduct }
