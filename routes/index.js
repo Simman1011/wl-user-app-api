@@ -5,6 +5,7 @@ const initializeRoutes = (app) => {
     app.use('/api/v1/product', require('./v1/product_route'));
     app.use('/api/v1/wishlist', require('./v1/wishlist_route'));
     app.use('/api/v1/cart', require('./v1/cart_route'));
+    app.use('/api/v1/order', require('./v1/order_route'));
 };
 
 module.exports = initializeRoutes;
