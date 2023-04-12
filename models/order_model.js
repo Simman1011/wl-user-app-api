@@ -47,6 +47,12 @@ const orderSchema = new mongoose.Schema({
     required: true,
     default: 'I'
   },
+  deliveryPartner:{
+    type: ObjectId
+  },
+  offerOrCoupon:{
+    type: String
+  },
   deliveryAt:{
     type: Date,
     required: true,

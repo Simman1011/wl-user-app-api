@@ -3,13 +3,14 @@ const {ObjectId} = require('mongodb');
 
 const Order = require('../models/order_model');
 const Product = require('../models/product_model');
+const Coupon = require('../models/coupon_model');
 
 const addOrder = asyncHandler(async (req, res) => {
-  const { userId, addressId, items, deliveryDate } = req.body;
+  const { userId, addressId, items, deliveryDate, firstOrder, couponCode } = req.body;
 
   // Check if products exist
-  const productIds = items.map(item => item.productId);
-  const products = await Product.find({ _id: { $in: productIds } });
+  let productIds = items.map(item => item.productId);
+  let products = await Product.find({ _id: { $in: productIds } });
 
   if (products.length !== productIds.length) {
     return res.status(400).json({ error: 'Products do not exist' });
@@ -26,12 +27,33 @@ const addOrder = asyncHandler(async (req, res) => {
     return { product: product._id, quantity, price, subTotal };
   });
 
+  if (firstOrder) {
+    let prevOrder = await Order.find({user: { $in: userId }})
+    if (prevOrder?.length === 0) {
+      let firstOrderDiscount = await Coupon.find({type: {$in: 'B'}});
+      console.log(firstOrderDiscount[0], 'worth');
+      // total -= firstOrderDiscount[0].worth
+    }else{
+      return res.status(400).json({ error: 'This not user first order' });
+    }
+  }
+
+  // if (couponCode) {
+  //   let couponDetails = await Order.find({code: { $in: couponCode }})
+  //   if (couponDetails?.length === 0) {
+  //     total -= couponDetails.worth
+  //   }else{
+  //     return res.status(400).json({ error: 'This coupon code is not valid' });
+  //   }
+  // }
+
   const order = new Order({
     user: new ObjectId(userId),
     address: new ObjectId(addressId),
     items: orderItems,
     total: total,
-    deliveryAt: new Date(deliveryDate)
+    deliveryAt: new Date(deliveryDate),
+    offerOrCoupon: coupon
   });
 
   // Save order object to database
