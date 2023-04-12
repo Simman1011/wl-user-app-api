@@ -18,6 +18,7 @@ const addOrder = asyncHandler(async (req, res) => {
 
   // Calculate order total and create order object
   let total = 0;
+  let discount = '';
   const orderItems = items.map(item => {
     const product = products.find(p => p._id.toString() === item.productId);
     const price = product.offerPrice;
@@ -27,25 +28,27 @@ const addOrder = asyncHandler(async (req, res) => {
     return { product: product._id, quantity, price, subTotal };
   });
 
-  if (firstOrder) {
+  if (firstOrder && couponCode != '') {
     let prevOrder = await Order.find({user: { $in: userId }})
     if (prevOrder?.length === 0) {
-      let firstOrderDiscount = await Coupon.find({type: {$in: 'B'}});
-      console.log(firstOrderDiscount[0], 'worth');
-      // total -= firstOrderDiscount[0].worth
+      let firstOrderDiscount = await Coupon.findOne({status: 'Y', type: 'B'});
+      total -= firstOrderDiscount?.worth;
+      discount = 'First Order';
     }else{
       return res.status(400).json({ error: 'This not user first order' });
     }
   }
 
-  // if (couponCode) {
-  //   let couponDetails = await Order.find({code: { $in: couponCode }})
-  //   if (couponDetails?.length === 0) {
-  //     total -= couponDetails.worth
-  //   }else{
-  //     return res.status(400).json({ error: 'This coupon code is not valid' });
-  //   }
-  // }
+  if (couponCode) {
+    let couponDetails = await Coupon.findOne({status: 'Y', code: couponCode});
+    console.log(couponDetails);
+    if (couponDetails !== null) {
+      total -= couponDetails?.worth;
+      discount = couponCode;
+    }else{
+      return res.status(400).json({ error: 'This coupon code is not valid' });
+    }
+  }
 
   const order = new Order({
     user: new ObjectId(userId),
@@ -53,16 +56,18 @@ const addOrder = asyncHandler(async (req, res) => {
     items: orderItems,
     total: total,
     deliveryAt: new Date(deliveryDate),
-    offerOrCoupon: coupon
+    offerOrCoupon: discount
   });
 
+    return res.status(200).json(order);
+
   // Save order object to database
-  try {
-    const savedOrder = await order.save();
-    return res.status(200).json(savedOrder);
-  } catch (err) {
-    return res.status(500).json({ error: err });
-  }
+  // try {
+  //   const savedOrder = await order.save();
+  //   return res.status(200).json(savedOrder);
+  // } catch (err) {
+  //   return res.status(500).json({ error: err });
+  // }
 })
 
 module.exports = { addOrder }
