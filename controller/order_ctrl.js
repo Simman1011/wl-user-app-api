@@ -42,7 +42,7 @@ const addOrder = asyncHandler(async (req, res) => {
   }
 
   if (couponCode) {
-    let coupon = await validateCoupon(couponCode, total)
+    let coupon = await validateCoupon(couponCode, total, userId)
     console.log(total, 'coupon');
     if (coupon?.error) {
       return res.status(400).json(coupon);

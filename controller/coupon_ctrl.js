@@ -20,9 +20,9 @@ const getCoupon = asyncHandler(async (req, res) =>{
 
 const applyCoupon = asyncHandler(async (req, res) =>{
     let { code } = req.params
-    const { price } = req.body;
+    const { price, user } = req.body;
     try{
-        let valid = await validateCoupon(code, price)
+        let valid = await validateCoupon(code, price, user)
         if (valid?.error) {
             return res.status(400).json(valid);
         }else{

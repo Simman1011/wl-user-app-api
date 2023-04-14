@@ -26,6 +26,10 @@ var couponSchema = new mongoose.Schema({
     useLimit:{
         type:Number
     },
+    validUsers:{
+        type: Array,
+        default: []
+    },
     expiryDate:{
         type : Date
     },
