@@ -5,6 +5,8 @@ const Order = require('../models/order_model');
 const Product = require('../models/product_model');
 const Coupon = require('../models/coupon_model');
 
+const { validateCoupon } = require("../helper/index")
+
 const addOrder = asyncHandler(async (req, res) => {
   const { userId, addressId, items, deliveryDate, firstOrder, couponCode } = req.body;
 
@@ -40,13 +42,13 @@ const addOrder = asyncHandler(async (req, res) => {
   }
 
   if (couponCode) {
-    let couponDetails = await Coupon.findOne({status: 'Y', code: couponCode});
-    console.log(couponDetails);
-    if (couponDetails !== null) {
-      total -= couponDetails?.worth;
-      discount = couponCode;
+    let coupon = await validateCoupon(couponCode, total)
+    console.log(total, 'coupon');
+    if (coupon?.error) {
+      return res.status(400).json(coupon);
     }else{
-      return res.status(400).json({ error: 'This coupon code is not valid' });
+      total -= coupon.data?.worth;
+      discount = coupon.data?.code;
     }
   }
 

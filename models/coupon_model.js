@@ -23,9 +23,6 @@ var couponSchema = new mongoose.Schema({
     minPrice:{
         type:Number
     },
-    maxPrice:{
-        type:Number
-    },
     useLimit:{
         type:Number
     },
