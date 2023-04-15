@@ -65,7 +65,11 @@ const addOrder = asyncHandler(async (req, res) => {
       }else{
         total -= offer.data?.worth;
         discount = offerCode;
-        await Coupon.findOneAndUpdate({type: 'RB'}, {$push:{"validUsers": offer.user}});
+        try {
+          await Coupon.findOneAndUpdate({type: 'RB'}, {$push:{"validUsers": offer.user}});
+        } catch (err) {
+          return res.status(500).json({ error: err });
+        }
       }
     }else{
       offer = await validateCoupon(offerCode, total, userId)
@@ -87,8 +91,6 @@ const addOrder = asyncHandler(async (req, res) => {
     offerOrCoupon: discount
   });
 
-    // return res.status(200).json(order);
-
   // Save order object to database
   try {
     const savedOrder = await order.save();
@@ -98,4 +100,17 @@ const addOrder = asyncHandler(async (req, res) => {
   }
 })
 
-module.exports = { getOrders, addOrder}
+const reviewDP = asyncHandler(async (req, res) => {
+  let { orderId } = req.params
+  let review = req.body;
+
+  try {
+    await Order.findByIdAndUpdate(orderId, {dpReview: review}, {new: true});
+    res.json({message: "Review added successfully"})
+  } catch (err) {
+    throw new Error(err)
+  }
+
+})
+
+module.exports = { getOrders, addOrder, reviewDP }

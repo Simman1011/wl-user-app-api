@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongodb');
 
-
 const orderItemSchema = new mongoose.Schema({
   product: {
     type: ObjectId,
@@ -21,6 +20,21 @@ const orderItemSchema = new mongoose.Schema({
     type: Number,
     required: true,
     min: 0
+  }
+});
+
+const orderReviewSchema = new mongoose.Schema({
+  report:{
+    type: String
+  },
+  star: {
+    type: Number
+  },
+  message: {
+    type: String
+  },
+  image: {
+    type: String
   }
 });
 
@@ -50,7 +64,13 @@ const orderSchema = new mongoose.Schema({
   deliveryPartner:{
     type: ObjectId
   },
+  dpReview:{
+    type: orderReviewSchema
+  },
   offerOrCoupon:{
+    type: String
+  },
+  distance:{
     type: String
   },
   deliveryAt:{
