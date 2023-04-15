@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongodb');
 
-const orderItemSchema = new mongoose.Schema({
+const ItemSchema = new mongoose.Schema({
   product: {
     type: ObjectId,
     required: true
@@ -23,7 +23,7 @@ const orderItemSchema = new mongoose.Schema({
   }
 });
 
-const orderReviewSchema = new mongoose.Schema({
+const reviewSchema = new mongoose.Schema({
   report:{
     type: String
   },
@@ -38,6 +38,16 @@ const orderReviewSchema = new mongoose.Schema({
   }
 });
 
+const cancelSchema = new mongoose.Schema({
+  reason: {
+    type: Number
+  },
+  comment:{
+    type: String
+  },
+});
+
+
 const orderSchema = new mongoose.Schema({
   user: {
     type: ObjectId,
@@ -48,7 +58,7 @@ const orderSchema = new mongoose.Schema({
     required: true
   },
   items: {
-    type: [orderItemSchema],
+    type: [ItemSchema],
     required: true
   },
   total: {
@@ -65,7 +75,7 @@ const orderSchema = new mongoose.Schema({
     type: ObjectId
   },
   dpReview:{
-    type: orderReviewSchema
+    type: reviewSchema
   },
   offerOrCoupon:{
     type: String
@@ -73,9 +83,16 @@ const orderSchema = new mongoose.Schema({
   distance:{
     type: String
   },
+  cancel:{
+    type: cancelSchema
+  },
   deliveryAt:{
     type: Date,
     required: true,
+  },
+  changeDate:{
+    type: String,
+    default: 'N'
   },
   createdAt: {
     type: Date,

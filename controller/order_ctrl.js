@@ -127,6 +127,30 @@ const getOrderDetails = asyncHandler(async (req, res) => {
   }
 })
 
+const cancelOrder = asyncHandler(async (req, res) => {
+  let { orderId } = req.params
+  let reason = req.body;
+
+  try {
+    await Order.findByIdAndUpdate(orderId, {status: 'C', cancel: reason}, {new: true});
+    res.json({message: "Order was canceled"})
+  } catch (err) {
+    throw new Error(err)
+  }
+})
+
+const changeDate = asyncHandler(async (req, res) => {
+  let { orderId } = req.params
+  let { date } = req.body;
+
+  try {
+    await Order.findByIdAndUpdate(orderId, {deliveryAt: date, changeDate: 'Y'}, {new: true});
+    res.json({message: "Delivery date was changed"})
+  } catch (err) {
+    throw new Error(err)
+  }
+})
+
 const reviewDP = asyncHandler(async (req, res) => {
   let { orderId } = req.params
   let review = req.body;
@@ -139,4 +163,4 @@ const reviewDP = asyncHandler(async (req, res) => {
   }
 })
 
-module.exports = { getOrders, addOrder, getOrderDetails, reviewDP }
+module.exports = { getOrders, addOrder, getOrderDetails, cancelOrder, changeDate, reviewDP }
