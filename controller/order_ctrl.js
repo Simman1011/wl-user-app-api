@@ -4,6 +4,8 @@ const {ObjectId} = require('mongodb');
 const Order = require('../models/order_model');
 const Product = require('../models/product_model');
 const Coupon = require('../models/coupon_model');
+const Address = require('../models/address_model');
+const DeliveryPartner = require('../models/deliveryPartner_model');
 
 const { validateCoupon, validateReffer } = require("../helper/index")
 
@@ -100,6 +102,31 @@ const addOrder = asyncHandler(async (req, res) => {
   }
 })
 
+const getOrderDetails = asyncHandler(async (req, res) => {
+  let { orderId } = req.params
+
+  try {
+    let orderDetails = await Order.findById(orderId);
+    if (orderDetails !== null) {
+      let data = {...orderDetails._doc}
+      let partner = await DeliveryPartner.findById(orderDetails.deliveryPartner);
+      let address = await Address.findById(orderDetails.address);
+
+      data['deliveryPartner'] = partner
+      data['address'] = address;
+
+      res.json({
+        message: "Get order details successfully",
+        data: data
+      }) 
+    }else{
+      return res.status(400).json({ error: 'Invalid Order Id' });
+    }
+  } catch (err) {
+    throw new Error(err)
+  }
+})
+
 const reviewDP = asyncHandler(async (req, res) => {
   let { orderId } = req.params
   let review = req.body;
@@ -110,7 +137,6 @@ const reviewDP = asyncHandler(async (req, res) => {
   } catch (err) {
     throw new Error(err)
   }
-
 })
 
-module.exports = { getOrders, addOrder, reviewDP }
+module.exports = { getOrders, addOrder, getOrderDetails, reviewDP }
