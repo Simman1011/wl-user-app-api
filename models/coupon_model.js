@@ -5,6 +5,9 @@ var couponSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    description:{
+        type:String
+    },
     type:{
         type:String,
         required:true,
@@ -14,6 +17,10 @@ var couponSchema = new mongoose.Schema({
     },
     worth:{
         type:Number,
+        required:true,
+    },
+    worthType:{
+        type:String,
         required:true,
     },
     totalOrders:{

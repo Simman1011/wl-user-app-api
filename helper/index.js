@@ -14,11 +14,12 @@ async function validateCoupon(code, price, user) {
         if ((!couponDetails?.expiryDate || couponDetails?.expiryDate >= new Date())) {
             if ((couponDetails?.validUsers?.length === 0 || couponDetails?.validUsers.find(vu => vu === user))) {
                 let totalOrders = await Order.find({offerOrCoupon: {$in : code}});
-                if (totalOrders?.length <= couponDetails?.useLimit) {
+                if (couponDetails?.useLimit == null || couponDetails?.useLimit >= totalOrders?.length) {
                     if (price >= couponDetails?.minPrice) {
                         return({
                             message: "Coupon apply successfully",
-                            data: couponDetails
+                            data: couponDetails,
+                            user: user
                         })
                     }else{
                         return({ error: `This coupon validate minimum Rs.${couponDetails?.minPrice} shopping` })

@@ -50,8 +50,13 @@ const addOrder = asyncHandler(async (req, res) => {
   if (firstOrder && offerCode != '') {
     let prevOrder = await Order.find({user: { $in: userId }})
     if (prevOrder?.length === 0) {
-      let firstOrderDiscount = await Coupon.findOne({status: 'Y', type: 'B'});
-      total -= firstOrderDiscount?.worth;
+      let bonus = await Coupon.findOne({status: 'Y', type: 'B'});
+      if (bonus?.worthType === 'Rs') {
+        total -= bonus?.worth;
+      } else {
+        var percent = (bonus?.worth / 100) * total;
+        total -= percent
+      }
       discount = 'First Order';
     }else{
       return res.status(400).json({ error: 'This not user first order' });
@@ -65,7 +70,12 @@ const addOrder = asyncHandler(async (req, res) => {
       if (offer?.error) {
         return res.status(400).json(offer);
       }else{
-        total -= offer.data?.worth;
+        if (offer?.data?.worthType === 'Rs') {
+          total -= offer?.data?.worth;
+        } else {
+          var percent = (offer?.data?.worth / 100) * total;
+          total -= percent
+        }
         discount = offerCode;
         try {
           await Coupon.findOneAndUpdate({type: 'RB'}, {$push:{"validUsers": offer.user}});
@@ -78,8 +88,18 @@ const addOrder = asyncHandler(async (req, res) => {
       if (offer?.error) {
         return res.status(400).json(offer);
       }else{
-        total -= offer.data?.worth;
+        if (offer?.data?.worthType === 'Rs') {
+          total -= offer?.data?.worth;
+        } else {
+          var percent = (offer?.data?.worth / 100) * total;
+          total -= percent
+        }
         discount = offer.data?.code;
+        try {
+          await Coupon.findOneAndUpdate({type: 'RB'}, {$pull:{"validUsers": offer.user}});
+        } catch (err) {
+          return res.status(500).json({ error: err });
+        }
       }
     }
   }
@@ -92,6 +112,8 @@ const addOrder = asyncHandler(async (req, res) => {
     deliveryAt: new Date(deliveryDate),
     offerOrCoupon: discount
   });
+
+    // return res.status(200).json(order);
 
   // Save order object to database
   try {
