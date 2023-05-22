@@ -24,8 +24,9 @@ const getReview = asyncHandler(async (req, res) =>{
 })
 
 const addEditReview = asyncHandler(async (req, res) =>{
-    let review = req.body;
     let { id } = req.params;
+    let review = req.body;
+    review['user'] = req.user.id;
 
     try{
         if (id) {

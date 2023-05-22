@@ -4,7 +4,7 @@ const { getCoupon, getMyCoupons, applyCoupon } = require("../../controller/coupo
 const auth = require("../../middlewares/auth");
 
 router.get("/:type", auth, getCoupon)
-router.get("/my/:user", auth, getMyCoupons)
+router.get("/my", auth, getMyCoupons)
 router.get("/apply/:code", auth, applyCoupon)
 
 module.exports = router

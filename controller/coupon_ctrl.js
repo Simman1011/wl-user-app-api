@@ -19,10 +19,9 @@ const getCoupon = asyncHandler(async (req, res) =>{
 })
 
 const getMyCoupons = asyncHandler(async (req, res) =>{
-    let { user } = req.params
     let { limit, skip } = req.query;
     try{
-        let find = await Coupon.find({validUsers: {$in: user}}).limit(limit).skip(skip)
+        let find = await Coupon.find({validUsers: {$in: req.user.id}}).limit(limit).skip(skip)
 
         res.json({
             message: "Coupon(s) get successfully",

@@ -3,7 +3,7 @@ const router = express.Router()
 const auth = require("../../middlewares/auth");
 const { getOrders, addOrder, getOrderDetails, cancelOrder, changeDate, reviewDP } = require("../../controller/order_ctrl")
 
-router.get("/getAll/:user", auth, getOrders)
+router.get("/getAll", auth, getOrders)
 router.post("/add", auth, addOrder)
 router.get("/getOne/:orderId", auth, getOrderDetails)
 router.post("/cancel/:orderId", auth, cancelOrder)

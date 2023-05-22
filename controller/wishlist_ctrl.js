@@ -4,11 +4,10 @@ const Product = require("../models/product_model")
 const asyncHandler = require("express-async-handler");
 
 const getUserWishlist = asyncHandler(async (req, res) =>{
-    let { userId } = req.params
     let { limit, skip } = req.query;
 
     try{
-        let user = await User.findById(userId);
+        let user = await User.findById(req.user.id);
         let userWishlist = user.wishlist;
         let products = await Product.find({ '_id': { $in: userWishlist } }).limit(limit).skip(skip);
 
@@ -22,21 +21,20 @@ const getUserWishlist = asyncHandler(async (req, res) =>{
 })
 
 const toggleWishlist = asyncHandler(async (req, res) =>{
-    let { userId } = req.params
     let { productId } = req.body;
 
     try{
-        let user = await User.findById(userId).find({wishlist: {$in: [productId]}})
+        let user = await User.findById(req.user.id).find({wishlist: {$in: [productId]}})
 
         if (user?.length > 0) {
             await User.updateOne(
-                { _id: userId },
+                { _id: req.user.id },
                 { $pull: { wishlist: productId }}
             )
             res.json({message: "Product removed to wishlist successfully"})
         }else{
             await User.updateOne(
-                { _id: userId },
+                { _id: req.user.id },
                 { $push: { wishlist: productId }}
             )
             res.json({message: "Product added to wishlist successfully"})

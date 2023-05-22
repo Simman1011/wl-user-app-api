@@ -10,10 +10,9 @@ const DeliveryPartner = require('../models/deliveryPartner_model');
 const { validateCoupon, validateReffer } = require("../helper/index")
 
 const getOrders = asyncHandler(async (req, res) =>{
-  let { user } = req.params
   let { limit, skip } = req.query;
   try{
-      let find = await Order.find({user: {$in: user}}).limit(limit).skip(skip)
+      let find = await Order.find({user: {$in: req.user.id}}).limit(limit).skip(skip)
 
       res.json({
           message: "Order(s) get successfully",
@@ -25,7 +24,7 @@ const getOrders = asyncHandler(async (req, res) =>{
 })
 
 const addOrder = asyncHandler(async (req, res) => {
-  const { userId, addressId, items, deliveryDate, firstOrder, offerCode } = req.body;
+  const { addressId, items, deliveryDate, firstOrder, offerCode } = req.body;
 
   // Check if products exist
   let productIds = items.map(item => item.productId);
@@ -50,7 +49,7 @@ const addOrder = asyncHandler(async (req, res) => {
   });
 
   if (firstOrder && offerCode != '') {
-    let prevOrder = await Order.find({user: { $in: userId }})
+    let prevOrder = await Order.find({user: { $in: req.user.id }})
     if (prevOrder?.length === 0) {
       let bonus = await Coupon.findOne({status: 'Y', type: 'B'});
       if (bonus?.worthType === 'Rs') {
@@ -68,7 +67,7 @@ const addOrder = asyncHandler(async (req, res) => {
   if (offerCode) {
     let offer;
     if (offerCode.startsWith("WLREFFER")) {
-      offer = await validateReffer(offerCode, total, userId)
+      offer = await validateReffer(offerCode, total, req.user.id)
       if (offer?.error) {
         return res.status(400).json(offer);
       }else{
@@ -86,7 +85,7 @@ const addOrder = asyncHandler(async (req, res) => {
         }
       }
     }else{
-      offer = await validateCoupon(offerCode, total, userId)
+      offer = await validateCoupon(offerCode, total, req.user.id)
       if (offer?.error) {
         return res.status(400).json(offer);
       }else{
@@ -107,7 +106,7 @@ const addOrder = asyncHandler(async (req, res) => {
   }
 
   const order = new Order({
-    user: new ObjectId(userId),
+    user: new ObjectId(req.user.id),
     address: new ObjectId(addressId),
     items: orderItems,
     total: total,
@@ -115,15 +114,15 @@ const addOrder = asyncHandler(async (req, res) => {
     offerOrCoupon: discount
   });
 
-    // return res.status(200).json(order);
+    return res.status(200).json(order);
 
   // Save order object to database
-  try {
-    const savedOrder = await order.save();
-    return res.status(200).json(savedOrder);
-  } catch (err) {
-    return res.status(500).json({ error: err });
-  }
+  // try {
+  //   const savedOrder = await order.save();
+  //   return res.status(200).json(savedOrder);
+  // } catch (err) {
+  //   return res.status(500).json({ error: err });
+  // }
 })
 
 const getOrderDetails = asyncHandler(async (req, res) => {

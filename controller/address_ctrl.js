@@ -3,9 +3,8 @@ const asyncHandler = require("express-async-handler");
 
 // Add new address
 const addAddress = asyncHandler(async (req, res) =>{
-    let { userId } = req.params
     let newAds = req.body
-    newAds['userId'] = userId
+    newAds['userId'] = req.user.id
     try{
         await Address.create(newAds)
         res.json({message: "Address added successfully"})
@@ -16,9 +15,8 @@ const addAddress = asyncHandler(async (req, res) =>{
 
 // Get user all address
 const getUserAds = asyncHandler(async (req, res) =>{
-    let { userId } = req.params
     try{
-        const ads = await Address.find({userId: userId})
+        const ads = await Address.find({userId: req.user.id})
         res.json({
             message: "Address get successfully",
             data: ads
@@ -32,7 +30,7 @@ const getUserAds = asyncHandler(async (req, res) =>{
 const getOneAds = asyncHandler(async (req, res) =>{
     let { id } = req.params
     try{
-        const ads = await Address.findOne({_id: id})
+        const ads = await Address.findById(id)
         res.json({
             message: "Address get successfully",
             data: ads

@@ -50,9 +50,8 @@ const logout = asyncHandler(async (req, res)=>{
 })
 
 const profileUpdate = asyncHandler(async (req, res)=>{
-    const { id } = req.params
     try{
-        await User.findByIdAndUpdate(id,req.body)
+        await User.findByIdAndUpdate(req.user.id,req.body)
         res.json({message: "Profile has been updated"})
     }catch(error){
         throw new Error(error)
@@ -60,10 +59,15 @@ const profileUpdate = asyncHandler(async (req, res)=>{
 })
 
 const deleteAccount = asyncHandler(async (req, res)=>{
-    const { id } = req.params
     try{
-        await User.findByIdAndUpdate(id,{status: "D"})
-        res.json({message: "Your account has been deleted"})
+        let user = await User.findOne({_id: req.user.id, status: "Y"})
+        console.log(user);
+        if (!user) {
+            res.json({message: "Account not found!!!"})
+        }else{
+            await User.findByIdAndUpdate(req.user.id,{status: "D"})
+            res.json({message: "Your account has been deleted"})
+        }
     }catch(error){
         throw new Error(error)
     }
