@@ -38,13 +38,15 @@ const addOrder = asyncHandler(async (req, res) => {
   // Calculate order total and create order object
   let total = 0;
   let discount = '';
-  const orderItems = items.map(item => {
-    const product = products.find(p => p._id.toString() === item.productId);
-    const price = product.offerPrice;
-    const quantity = item.quantity;
-    const subTotal = price * quantity;
-    total += subTotal;
-    return { product: product._id, quantity, price, subTotal };
+  let orderItems = items.map(item => {
+    let product = products.find(p => p._id.toString() === item.productId)
+    let price = product.offerPrice
+    let quantity = item.quantity
+    let color = item.color
+    let size = item.size
+    let subTotal = price * quantity
+    total += subTotal
+    return { product: product._id, quantity, color, size, price, subTotal };
   });
 
   if (firstOrder && offerCode != '') {

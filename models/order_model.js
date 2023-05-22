@@ -11,6 +11,12 @@ const ItemSchema = new mongoose.Schema({
     required: true,
     min: 1
   },
+  color: {
+    type: String,
+  },
+  size: {
+    type: String,
+  },
   price: {
     type: Number,
     required: true,

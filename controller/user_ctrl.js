@@ -3,8 +3,7 @@ const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
 const { getRefferalCode } = require("../helper/index")
 
-// New user register
-const userRegister = asyncHandler(async (req, res) =>{
+const register = asyncHandler(async (req, res) =>{
     const email = req.body.email;
     const mobile = req.body.mobile;
     let find = { status: 'Y', $or: [{ email:email }, {mobile:mobile}] }
@@ -25,8 +24,7 @@ const userRegister = asyncHandler(async (req, res) =>{
     }
 })
 
-// User login
-const userLogin = asyncHandler(async (req, res)=>{
+const login = asyncHandler(async (req, res)=>{
     const { user, password } = req.body
     let find = { $or: [ { email:user }, {mobile:user}] }
     const UserDetails = await User.findOne(find)
@@ -44,7 +42,13 @@ const userLogin = asyncHandler(async (req, res)=>{
     }
 })
 
-// User profile update
+const logout = asyncHandler(async (req, res)=>{
+    let cookie = req.cookies
+    if(!cookie?.refreshToken) throw new Error('No refresh token in cookies')
+    let refreshToken = cookie.refreshToken
+    let user = ''
+})
+
 const profileUpdate = asyncHandler(async (req, res)=>{
     const { id } = req.params
     try{
@@ -55,7 +59,6 @@ const profileUpdate = asyncHandler(async (req, res)=>{
     }
 })
 
-// User delete account
 const deleteAccount = asyncHandler(async (req, res)=>{
     const { id } = req.params
     try{
@@ -66,4 +69,4 @@ const deleteAccount = asyncHandler(async (req, res)=>{
     }
 })
 
-module.exports = { userRegister, userLogin, profileUpdate, deleteAccount }
+module.exports = { register, login, logout, profileUpdate, deleteAccount }

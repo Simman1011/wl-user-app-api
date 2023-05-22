@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 var userSchema = new mongoose.Schema({
     profileImg:{
         type:String,
-        default: "https://img.myloview.com/posters/default-avatar-profile-icon-vector-social-media-user-image-700-205124837.jpg"
     },
     name:{
         type:String,
