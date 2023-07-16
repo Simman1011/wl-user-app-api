@@ -6,16 +6,13 @@ const ItemSchema = new mongoose.Schema({
     type: ObjectId,
     required: true
   },
-  quantity: {
-    type: Number,
-    required: true,
-    min: 1
-  },
   color: {
     type: String,
+    required: true
   },
   size: {
-    type: String,
+    type: Array,
+    required: true
   },
   price: {
     type: Number,

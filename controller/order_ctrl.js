@@ -40,12 +40,11 @@ const addOrder = asyncHandler(async (req, res) => {
   let orderItems = items.map(item => {
     let product = products.find(p => p._id.toString() === item.productId)
     let price = product.offerPrice
-    let quantity = item.quantity
     let color = item.color
     let size = item.size
-    let subTotal = price * quantity
+    let subTotal = price * item.size.length
     total += subTotal
-    return { product: product._id, quantity, color, size, price, subTotal };
+    return { product: product._id, color, size, price, subTotal };
   });
 
   if (firstOrder && offerCode != '') {
@@ -114,15 +113,15 @@ const addOrder = asyncHandler(async (req, res) => {
     offerOrCoupon: discount
   });
 
-    return res.status(200).json(order);
+    // return res.status(200).json(order);
 
   // Save order object to database
-  // try {
-  //   const savedOrder = await order.save();
-  //   return res.status(200).json(savedOrder);
-  // } catch (err) {
-  //   return res.status(500).json({ error: err });
-  // }
+  try {
+    const savedOrder = await order.save();
+    return res.status(200).json(savedOrder);
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
 })
 
 const getOrderDetails = asyncHandler(async (req, res) => {
