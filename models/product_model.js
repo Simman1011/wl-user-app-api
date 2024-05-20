@@ -1,80 +1,107 @@
-const mongoose = require('mongoose');
-const { ObjectId } = require('mongodb');
+const mongoose = require("mongoose");
+const { ObjectId } = require("mongodb");
 
-var productSchema = new mongoose.Schema({
-    mainCatId:{
-        type:ObjectId,
-        required:true,
-    },
-    subCatId:{
-        type:ObjectId,
-        required:true,
-    },
-    name:{
-        type:String,
-        required:true,
-    },
-    mainImage:{
-        type:String,
-        required:true,
-    },
-    slideImages:{
-        type:Array
-    },
-    offerPrice:{
-        type:Number,
-        required:true,
-    },
-    sellingPrice:{
-        type:Number,
-        required:true,
-    },
-    offerPct:{
-        type:Number,
-        required:true,
-    },
-    sizes:{
-        type:Array
-    },
-    colors:{
-        type:Array
-    },
-    tagId:{
-        type:Number
-    },
-    stocks:{
-        type:Number
-    },
-    sleeve:{
-        type:String
-    },
-    fabric:{
-        type:String
-    },
-    pattern:{
-        type:String
-    },
-    packOf:{
-        type:String
-    },
-    description:{
-        type:String
-    },
-    isPopular:{
-        type:Boolean,
-        default: false
-    },
-    status:{
-        type:String,
-        default: "Y"
-    },
-    createdAt:{ 
-        type : Date, 
-        default: Date.now 
-    },
-    updateAt:{ 
-        type : Date,
-    }
+const stockBySizeSchema = new mongoose.Schema({
+  size: {
+    type: String,
+  },
+  stocks: {
+    type: Number,
+  },
 });
 
-module.exports = mongoose.model('product', productSchema);
+const stockOptionSchema = new mongoose.Schema({
+  color: {
+    type: String,
+    required: true,
+  },
+  options: {
+    type: [stockBySizeSchema],
+    required: true,
+  },
+});
+
+var productSchema = new mongoose.Schema({
+  mainCat: {
+    type: ObjectId,
+    required: true,
+  },
+  subCat: {
+    type: ObjectId,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  slug: {
+    type: String,
+    required: true,
+  },
+  mainImage: {
+    type: String,
+    required: true,
+  },
+  slideImages: {
+    type: Array,
+  },
+  offerPrice: {
+    type: Number,
+    required: true,
+  },
+  sellingPrice: {
+    type: Number,
+    required: true,
+  },
+  offerPct: {
+    type: Number,
+    required: true,
+  },
+  stockOptions: {
+    type: [stockOptionSchema],
+    required: true,
+  },
+  totalStocks: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+  tagId: {
+    type: Number,
+  },
+  fits: {
+    type: String,
+  },
+  sleeve: {
+    type: String,
+  },
+  fabric: {
+    type: String,
+  },
+  pattern: {
+    type: String,
+  },
+  packOf: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
+  isPopular: {
+    type: Boolean,
+    default: false,
+  },
+  status: {
+    type: String,
+    default: "N",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updateAt: {
+    type: Date,
+  },
+});
+
+module.exports = mongoose.model("product", productSchema);

@@ -1,107 +1,110 @@
-const mongoose = require('mongoose');
-const { ObjectId } = require('mongodb');
+const mongoose = require("mongoose");
+const { ObjectId } = require("mongodb");
 
 const ItemSchema = new mongoose.Schema({
   product: {
     type: ObjectId,
-    required: true
+    required: true,
   },
   color: {
     type: String,
-    required: true
+    required: true,
   },
   size: {
-    type: Array,
-    required: true
+    type: String,
+    required: true,
+  },
+  qty: {
+    type: Number,
+    required: true,
+    min: 1,
   },
   price: {
     type: Number,
     required: true,
-    min: 0
+    min: 0,
   },
   subTotal: {
     type: Number,
     required: true,
-    min: 0
-  }
+    min: 0,
+  },
 });
 
 const reviewSchema = new mongoose.Schema({
-  report:{
-    type: String
+  report: {
+    type: String,
   },
   star: {
-    type: Number
+    type: Number,
   },
   message: {
-    type: String
+    type: String,
   },
   image: {
-    type: String
-  }
+    type: String,
+  },
 });
 
 const cancelSchema = new mongoose.Schema({
   reason: {
-    type: Number
+    type: Number,
   },
-  comment:{
-    type: String
+  comment: {
+    type: String,
   },
 });
-
 
 const orderSchema = new mongoose.Schema({
   user: {
     type: ObjectId,
-    required: true
+    required: true,
   },
   address: {
     type: ObjectId,
-    required: true
+    required: true,
   },
   items: {
     type: [ItemSchema],
-    required: true
+    required: true,
   },
   total: {
     type: Number,
     required: true,
-    min: 0
+    min: 0,
   },
-  status:{
+  status: {
     type: String,
     required: true,
-    default: 'I'
+    default: "I",
   },
-  deliveryPartner:{
-    type: ObjectId
+  deliveryPartner: {
+    type: ObjectId,
   },
-  dpReview:{
-    type: reviewSchema
+  dpReview: {
+    type: reviewSchema,
   },
-  offerOrCoupon:{
-    type: String
+  offerOrCoupon: {
+    type: String,
   },
-  distance:{
-    type: String
+  distance: {
+    type: String,
   },
-  cancel:{
-    type: cancelSchema
+  cancel: {
+    type: cancelSchema,
   },
-  deliveryAt:{
+  deliveryAt: {
     type: Date,
     required: true,
   },
-  changeDate:{
+  changeDate: {
     type: String,
-    default: 'N'
+    default: "N",
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model('order', orderSchema);
-
+module.exports = mongoose.model("order", orderSchema);
